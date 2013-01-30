@@ -29,13 +29,8 @@ end
 SimpleCov.start 'gem'
 
 require 'fakefs/spec_helpers'
-require 'logger'
 require 'minitest/autorun'
 require 'mocha/setup'
-require 'stringio'
-
-require 'kitchen'
-require 'kitchen/driver/dummy'
 
 # Nasty hack to redefine IO.read in terms of File#read for fakefs
 class IO
