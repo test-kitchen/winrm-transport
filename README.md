@@ -1,5 +1,11 @@
 # WinRM::Transport
 
+[![Gem Version](https://badge.fury.io/rb/winrm-transport.svg)](http://badge.fury.io/rb/winrm-transport)
+[![Build Status](https://secure.travis-ci.org/test-kitchen/winrm-transport.svg?branch=master)](https://travis-ci.org/test-kitchen/winrm-transport)
+[![Code Climate](https://codeclimate.com/github/test-kitchen/winrm-transport.svg)](https://codeclimate.com/github/test-kitchen/winrm-transport)
+[![Dependency Status](https://gemnasium.com/test-kitchen/winrm-transport.svg)](https://gemnasium.com/test-kitchen/winrm-transport)
+[![Inline docs](http://inch-ci.org/github/test-kitchen/winrm-transport.svg?branch=master)](http://inch-ci.org/github/test-kitchen/winrm-transport)
+
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/winrm/transport`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
