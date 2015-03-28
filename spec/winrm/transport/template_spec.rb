@@ -16,9 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative "../../../spec_helper"
+require_relative "../../spec_helper"
 
-require "kitchen/transport/winrm/template"
+require "winrm/transport/template"
 
 describe Kitchen::Transport::Winrm::Template do
 

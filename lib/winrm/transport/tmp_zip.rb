@@ -21,7 +21,7 @@ require "pathname"
 require "tempfile"
 require "zip"
 
-require "kitchen/transport/winrm/logging"
+require "winrm/transport/logging"
 
 module Kitchen
 

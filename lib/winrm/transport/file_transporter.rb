@@ -22,9 +22,9 @@ require "digest"
 require "securerandom"
 require "stringio"
 
-require "kitchen/transport/winrm/logging"
-require "kitchen/transport/winrm/template"
-require "kitchen/transport/winrm/tmp_zip"
+require "winrm/transport/logging"
+require "winrm/transport/template"
+require "winrm/transport/tmp_zip"
 
 module Kitchen
 
@@ -197,7 +197,7 @@ module Kitchen
         def check_files_template
           @check_files_template ||= Template.new(File.join(
             File.dirname(__FILE__),
-            %W[.. .. .. .. support check_files.ps1.erb]
+            %W[.. .. .. support check_files.ps1.erb]
           ))
         end
 
@@ -278,7 +278,7 @@ module Kitchen
         def decode_files_template
           @decode_files_template ||= Template.new(File.join(
             File.dirname(__FILE__),
-            %W[.. .. .. .. support decode_files.ps1.erb]
+            %W[.. .. .. support decode_files.ps1.erb]
           ))
         end
 

@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative "../../../spec_helper"
+require_relative "../../spec_helper"
 
 require "base64"
 require "csv"
@@ -24,7 +24,7 @@ require "stringio"
 require "logger"
 require "winrm"
 
-require "kitchen/transport/winrm/file_transporter"
+require "winrm/transport/file_transporter"
 
 describe Kitchen::Transport::Winrm::FileTransporter do
 
