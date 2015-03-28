@@ -18,7 +18,6 @@
 
 require_relative "../../../spec_helper"
 
-require "kitchen"
 require "kitchen/transport/winrm/tmp_zip"
 
 require "logger"

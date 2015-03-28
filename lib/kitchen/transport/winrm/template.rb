@@ -23,7 +23,7 @@ module Kitchen
 
   module Transport
 
-    class Winrm < Kitchen::Transport::Base
+    class Winrm
 
       # Wraps an ERb template which can be called multiple times with
       # different binding contexts.

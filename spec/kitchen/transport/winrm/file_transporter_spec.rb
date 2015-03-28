@@ -24,7 +24,6 @@ require "stringio"
 require "logger"
 require "winrm"
 
-require "kitchen"
 require "kitchen/transport/winrm/file_transporter"
 
 describe Kitchen::Transport::Winrm::FileTransporter do
@@ -82,7 +81,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       end
 
       it "uploads the hash_file in chunks for check_files" do
-        hash = Kitchen::Util.outdent!(<<-HASH.chomp)
+        hash = outdent!(<<-HASH.chomp)
           @{
             "#{dst}" = "#{src_md5}"
           }
@@ -151,7 +150,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       end
 
       it "uploads the hash_file in chunks for decode_files" do
-        hash = Kitchen::Util.outdent!(<<-HASH.chomp)
+        hash = outdent!(<<-HASH.chomp)
           @{
             "#{ps_tmpfile}" = @{
               "dst" = "#{dst}"
@@ -466,7 +465,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     end
 
     it "uploads the hash_file in chunks for check_files" do
-      hash = Kitchen::Util.outdent!(<<-HASH.chomp)
+      hash = outdent!(<<-HASH.chomp)
         @{
           "#{ps_tmpzip}" = "#{src_md5}"
         }
@@ -515,7 +514,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     end
 
     it "uploads the hash_file in chunks for decode_files" do
-      hash = Kitchen::Util.outdent!(<<-HASH.chomp)
+      hash = outdent!(<<-HASH.chomp)
         @{
           "#{ps_tmpfile}" = @{
             "dst" = "#{dst}"
@@ -666,7 +665,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     end
 
     it "uploads the hash_file in chunks for check_files" do
-      hash = Kitchen::Util.outdent!(<<-HASH.chomp)
+      hash = outdent!(<<-HASH.chomp)
         @{
           "#{dst1}" = "#{src1_md5}"
           "#{dst2}" = "#{src2_md5}"
@@ -713,7 +712,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     end
 
     it "uploads the hash_file in chunks for decode_files" do
-      hash = Kitchen::Util.outdent!(<<-HASH.chomp)
+      hash = outdent!(<<-HASH.chomp)
         @{
           "#{ps1_tmpfile}" = @{
             "dst" = "#{dst1}"
@@ -866,6 +865,10 @@ describe Kitchen::Transport::Winrm::FileTransporter do
 
   def md5sum(local)
     Digest::MD5.file(local).hexdigest
+  end
+
+  def outdent!(string)
+    string.gsub!(/^ {#{string.index(/[^ ]/)}}/, "")
   end
 
   def regexify(str, line = :whole_line)

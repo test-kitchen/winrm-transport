@@ -18,7 +18,6 @@
 
 require_relative "../../../spec_helper"
 
-require "kitchen"
 require "kitchen/transport/winrm/command_executor"
 
 require "base64"

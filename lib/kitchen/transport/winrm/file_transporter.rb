@@ -30,7 +30,7 @@ module Kitchen
 
   module Transport
 
-    class Winrm < Kitchen::Transport::Base
+    class Winrm
 
       # Wrapped exception for any internally raised WinRM-related errors.
       #
@@ -104,7 +104,7 @@ module Kitchen
 
           debug {
             "Uploaded #{files.keys.size} items " \
-            "in #{Util.duration(elapsed.real)}"
+            "in #{duration(elapsed.real)}"
           }
 
           files
@@ -282,6 +282,17 @@ module Kitchen
           ))
         end
 
+        # Returns a formatted string representing a duration in seconds.
+        #
+        # @param total [Integer] the total number of seconds
+        # @return [String] a formatted string of the form (XmYY.00s)
+        def duration(total)
+          total = 0 if total.nil?
+          minutes = (total / 60).to_i
+          seconds = (total - (minutes * 60))
+          format("(%dm%.2fs)", minutes, seconds)
+        end
+
         # Contructs a Hash of files or directories, keyed by the local MD5
         # digest. Each file entry has a source and destination set, at a
         # minimum.
@@ -419,7 +430,7 @@ module Kitchen
           debug {
             "Finished uploading #{src} to encoded tmpfile #{tmpfile} " \
             "(#{bytes.to_f / 1000} KB over #{chunks} chunks) " \
-            "in #{Util.duration(elapsed.real)}"
+            "in #{duration(elapsed.real)}"
           }
 
           [chunks, bytes]

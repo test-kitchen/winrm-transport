@@ -20,7 +20,7 @@ module Kitchen
 
   module Transport
 
-    class Winrm < Kitchen::Transport::Base
+    class Winrm
 
       # An object that can close a remote shell session over WinRM.
       #

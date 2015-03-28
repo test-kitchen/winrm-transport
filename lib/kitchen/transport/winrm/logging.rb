@@ -20,7 +20,7 @@ module Kitchen
 
   module Transport
 
-    class Winrm < Kitchen::Transport::Base
+    class Winrm
 
       # Mixin to use an optionally provided logger for logging.
       #

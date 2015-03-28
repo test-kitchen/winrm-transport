@@ -27,7 +27,7 @@ module Kitchen
 
   module Transport
 
-    class Winrm < Kitchen::Transport::Base
+    class Winrm
 
       # A temporary Zip file for a given directory.
       #

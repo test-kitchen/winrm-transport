@@ -22,7 +22,7 @@ module Kitchen
 
   module Transport
 
-    class Winrm < Kitchen::Transport::Base
+    class Winrm
 
       # Object which can execute multiple commands and Powershell scripts in
       # one shared remote shell session. The maximum number of commands per
