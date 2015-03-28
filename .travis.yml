@@ -7,6 +7,11 @@ rvm:
   - 1.9.3
   - ruby-head
 
+before_install:
+  - echo "Updating Bundler to ~> 1.9 until TravisCI has upgraded."
+  - gem install bundler -v "~> 1.9"
+  - bundle --version
+
 bundler_args: --without guard
 
 sudo: false
