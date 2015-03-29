@@ -23,7 +23,6 @@ require "securerandom"
 require "stringio"
 
 require "winrm/transport/logging"
-require "winrm/transport/template"
 require "winrm/transport/tmp_zip"
 
 module WinRM
@@ -171,8 +170,10 @@ module WinRM
       def check_files(files)
         debug { "Running check_files.ps1" }
         hash_file = create_remote_hash_file(check_files_ps_hash(files))
+        vars = %{$hash_file = "#{hash_file}"\n}
+
         output = service.run_powershell_script(
-          check_files_template % { :hash_file => hash_file }
+          [vars, check_files_script].join("\n")
         )
         parse_response(output)
       end
@@ -189,13 +190,11 @@ module WinRM
         ])
       end
 
-      # @return [Template] an un-rendered template of the check_files
-      #   PowerShell script
+      # @return [String] the check_files PowerShell script
       # @api private
-      def check_files_template
-        @check_files_template ||= Template.new(File.join(
-          File.dirname(__FILE__),
-          %W[.. .. .. support check_files.ps1.erb]
+      def check_files_script
+        @check_files_script ||= IO.read(File.join(
+          File.dirname(__FILE__), %W[.. .. .. support check_files.ps1]
         ))
       end
 
@@ -244,8 +243,10 @@ module WinRM
         else
           debug { "Running decode_files.ps1" }
           hash_file = create_remote_hash_file(decoded_files)
+          vars = %{$hash_file = "#{hash_file}"\n}
+
           output = service.run_powershell_script(
-            decode_files_template % { :hash_file => hash_file }
+            [vars, decode_files_script].join("\n")
           )
           parse_response(output)
         end
@@ -270,13 +271,11 @@ module WinRM
         ps_hash(Hash[result])
       end
 
-      # @return [Template] an un-rendered template of the decode_files
-      #   PowerShell script
+      # @return [String] the decode_files PowerShell script
       # @api private
-      def decode_files_template
-        @decode_files_template ||= Template.new(File.join(
-          File.dirname(__FILE__),
-          %W[.. .. .. support decode_files.ps1.erb]
+      def decode_files_script
+        @decode_files_script ||= IO.read(File.join(
+          File.dirname(__FILE__), %W[.. .. .. support decode_files.ps1]
         ))
       end
 
