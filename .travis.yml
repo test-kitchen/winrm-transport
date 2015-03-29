@@ -19,3 +19,8 @@ sudo: false
 matrix:
   allow_failures:
     - rvm: ruby-head
+
+addons:
+  code_climate:
+    repo_token:
+      secure: "WSrIaJVtAh88T7cd3DQY38yxiDz44Oms4Z5Dm+mVUv8gpKWixMR3t5ShmDW8+XXWWj3s3WUa2t5yZugrfz0gkrKCxSII6VURakBKy2jEKnEnJWoh8LKYjXHYW2fOU/PpclSFl0Ynxvt8Nn/F9dpbaGAqj2DwycAV4EtByuy06X0="
