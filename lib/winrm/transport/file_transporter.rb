@@ -43,7 +43,7 @@ module WinRM
     # expensive than vanilla CMD commands.
     #
     # This object is supported by either a `WinRM::WinRMWebService` or
-    # `Winrm::CommandExecutor` instance as it depends on the `#run_cmd` and
+    # `CommandExecutor` instance as it depends on the `#run_cmd` and
     # `#run_powershell_script` API contracts.
     #
     # An optional logger can be supplied, assuming it can respond to the
@@ -57,9 +57,9 @@ module WinRM
 
       # Creates a FileTransporter given a service object and optional logger.
       # The service object may be a `WinRM::WinRMWebService` or
-      # `Winrm::CommandExecutor` instance.
+      # `CommandExecutor` instance.
       #
-      # @param service [WinRM::WinRMWebService,Winrm::CommandExecutor] a
+      # @param service [WinRM::WinRMWebService,CommandExecutor] a
       #   winrm web service object
       # @param logger [#debug,#debug?] an optional logger/ui object that
       #   responds to `#debug` and `#debug?` (default: `nil`)
