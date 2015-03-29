@@ -38,4 +38,12 @@ task :quality => [:cane, :style, :stats]
 require "yard"
 YARD::Rake::YardocTask.new
 
+desc "Generate gem dependency graph"
+task :viz do
+  Bundler.with_clean_env do
+    sh "bundle viz --without test development guard " \
+      "--requirements --version"
+  end
+end
+
 task :default => [:test, :quality]
