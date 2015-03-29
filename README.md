@@ -3,8 +3,9 @@
 [![Gem Version](https://badge.fury.io/rb/winrm-transport.svg)](http://badge.fury.io/rb/winrm-transport)
 [![Build Status](https://secure.travis-ci.org/test-kitchen/winrm-transport.svg?branch=master)](https://travis-ci.org/test-kitchen/winrm-transport)
 [![Code Climate](https://codeclimate.com/github/test-kitchen/winrm-transport.svg)](https://codeclimate.com/github/test-kitchen/winrm-transport)
-[![Dependency Status](https://gemnasium.com/test-kitchen/winrm-transport.svg)](https://gemnasium.com/test-kitchen/winrm-transport)
+[![Test Coverage](https://codeclimate.com/github/test-kitchen/winrm-transport/badges/coverage.svg)](https://codeclimate.com/github/test-kitchen/winrm-transport)
 [![Inline docs](http://inch-ci.org/github/test-kitchen/winrm-transport.svg?branch=master)](http://inch-ci.org/github/test-kitchen/winrm-transport)
+[![Dependency Status](https://gemnasium.com/test-kitchen/winrm-transport.svg)](https://gemnasium.com/test-kitchen/winrm-transport)
 
 WinRM transport logic for re-using remote shells and uploading files. The original code was extracted from the [Test Kitchen][test_kitchen] project and remains the primary reference use case.
 
