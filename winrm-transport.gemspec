@@ -10,7 +10,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Fletcher Nichol"]
   spec.email         = ["fnichol@nichol.ca"]
 
-  spec.summary       = "TODO: Write a short summary, because Rubygems requires one."
+  spec.summary       = "WinRM transport logic for re-using remote shells " \
+                       "and uploading files. The original code was extracted " \
+                       "from the Test Kitchen project and remains the " \
+                       "primary reference use case."
 
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/test-kitchen/winrm-transport"
@@ -25,12 +28,12 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 1.9.1"
 
-  spec.add_dependency "winrm",    "~> 1.3"
-  spec.add_dependency "rubyzip",  ">= 1.1.7", "~> 1.1"
+  spec.add_dependency "winrm",                  "~> 1.3"
+  spec.add_dependency "rubyzip",                ">= 1.1.7", "~> 1.1"
 
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "bundler", "~> 1.9"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "bundler",    "~> 1.9"
+  spec.add_development_dependency "rake",       "~> 10.0"
 
   spec.add_development_dependency "fakefs",     "~> 0.4"
   spec.add_development_dependency "minitest"
@@ -44,6 +47,6 @@ Gem::Specification.new do |spec|
   # style and complexity libraries are tightly version pinned as newer releases
   # may introduce new and undesireable style choices which would be immediately
   # enforced in CI
-  spec.add_development_dependency "finstyle",  "1.4.0"
-  spec.add_development_dependency "cane",      "2.6.2"
+  spec.add_development_dependency "finstyle",   "1.4.0"
+  spec.add_development_dependency "cane",       "2.6.2"
 end
