@@ -50,6 +50,9 @@ module WinRM
         debug("Exception: #{e.inspect}")
       end
 
+      # @param shell_id [String] a remote shell ID
+      # @return [ShellCloser] a new ShellCloser with a copy of this object's
+      #   state and the shell_id set to the given parameter value
       def for(shell_id)
         self.class.new(@info, @debug, @args).tap { |c| c.shell_id = shell_id }
       end

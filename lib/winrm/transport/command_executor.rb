@@ -130,10 +130,19 @@ module WinRM
 
       private
 
+      # @return [Integer] the default maximum number of commands which can be
+      #   executed in one remote shell session on "older" versions of Windows
+      # @api private
       LEGACY_LIMIT = 15
 
+      # @return [Integer] the default maximum number of commands which can be
+      #   executed in one remote shell session on "modern" versions of Windows
+      # @api private
       MODERN_LIMIT = 1500
 
+      # @return [String] the PowerShell command used to determine the version
+      #   of Windows
+      # @api private
       PS1_OS_VERSION = "[environment]::OSVersion.Version.tostring()".freeze
 
       # @return [Integer] the number of executed commands on the remote

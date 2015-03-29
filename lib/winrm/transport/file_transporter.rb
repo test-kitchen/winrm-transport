@@ -109,8 +109,15 @@ module WinRM
 
       private
 
+      # @return [Integer] the maximum number of bytes that can be supplied on
+      #   a Windows CMD prompt without exceeded the maximum command line
+      #   length
+      # @api private
       MAX_ENCODED_WRITE = 8000
 
+      # @return [String] the Array pack template for Base64 encoding a stream
+      #   of data
+      # @api private
       BASE64_PACK = "m0".freeze
 
       # @return [#debug,#debug?] the logger
