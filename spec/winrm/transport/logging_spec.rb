@@ -24,7 +24,7 @@ require "logger"
 
 class ILog
 
-  include Kitchen::Transport::Winrm::Logging
+  include WinRM::Transport::Logging
 
   attr_reader :logger
 
@@ -40,7 +40,7 @@ class CustomSubject < ILog
   end
 end
 
-describe Kitchen::Transport::Winrm::Logging do
+describe WinRM::Transport::Logging do
 
   let(:logged_output)   { StringIO.new }
   let(:logger)          { Logger.new(logged_output) }

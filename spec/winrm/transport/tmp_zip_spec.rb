@@ -22,7 +22,7 @@ require "winrm/transport/tmp_zip"
 
 require "logger"
 
-describe Kitchen::Transport::Winrm::TmpZip do
+describe WinRM::Transport::TmpZip do
 
   let(:logged_output)   { StringIO.new }
   let(:logger)          { Logger.new(logged_output) }
@@ -42,7 +42,7 @@ describe Kitchen::Transport::Winrm::TmpZip do
     src_dir
   end
 
-  let(:tmp_zip) { Kitchen::Transport::Winrm::TmpZip.new(src_dir, logger) }
+  let(:tmp_zip) { WinRM::Transport::TmpZip.new(src_dir, logger) }
 
   before  { @tmpdirs = [] }
 
@@ -67,7 +67,7 @@ describe Kitchen::Transport::Winrm::TmpZip do
 
   describe "for a zip file containing the base directory" do
 
-    let(:tmp_zip) { Kitchen::Transport::Winrm::TmpZip.new(src_dir, logger) }
+    let(:tmp_zip) { WinRM::Transport::TmpZip.new(src_dir, logger) }
 
     it "contains the input entries" do
       zip = Zip::File.new(tmp_zip.path)
@@ -95,7 +95,7 @@ describe Kitchen::Transport::Winrm::TmpZip do
 
   describe "for a zip file containing entries under the base directory" do
 
-    let(:tmp_zip) { Kitchen::Transport::Winrm::TmpZip.new("#{src_dir}/", logger) }
+    let(:tmp_zip) { WinRM::Transport::TmpZip.new("#{src_dir}/", logger) }
 
     it "contains the input entries" do
       zip = Zip::File.new(tmp_zip.path)

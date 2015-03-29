@@ -24,7 +24,7 @@ require "base64"
 require "securerandom"
 require "winrm"
 
-describe Kitchen::Transport::Winrm::CommandExecutor do
+describe WinRM::Transport::CommandExecutor do
 
   let(:logged_output)   { StringIO.new }
   let(:logger)          { Logger.new(logged_output) }
@@ -32,12 +32,12 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
   let(:executor_args)   { [service, logger] }
 
   let(:executor) do
-    Kitchen::Transport::Winrm::CommandExecutor.new(*executor_args)
+    WinRM::Transport::CommandExecutor.new(*executor_args)
   end
 
   let(:service) do
     s = mock("winrm_service")
-    s.responds_like_instance_of(WinRM::WinRMWebService)
+    s.responds_like_instance_of(::WinRM::WinRMWebService)
     s
   end
 
@@ -48,7 +48,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
   end
 
   let(:version_output) do
-    o = WinRM::Output.new
+    o = ::WinRM::Output.new
     o[:exitcode] = 0
     o[:data].concat([{ :stdout => "6.3.9600.0\r\n" }])
     o
@@ -117,7 +117,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
     describe "for modern windows distributions" do
 
       let(:version_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([{ :stdout => "6.3.9600.0\r\n" }])
         o
@@ -134,7 +134,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
     describe "for older/legacy windows distributions" do
 
       let(:version_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([{ :stdout => "6.1.8500.0\r\n" }])
         o
@@ -154,7 +154,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
     describe "when #open has not been previously called" do
 
       it "raises a WinRMError error" do
-        err = proc { executor.run_cmd("nope") }.must_raise WinRM::WinRMError
+        err = proc { executor.run_cmd("nope") }.must_raise ::WinRM::WinRMError
         err.message.must_equal "#{executor.class}#open must be called " \
           "before any run methods are invoked"
       end
@@ -165,7 +165,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
       let(:command_id) { "command-123" }
 
       let(:echo_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([
           { :stdout => "Hello\r\n" },
@@ -223,14 +223,14 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
       # use a "old" version of windows with lower max_commands threshold
       # to trigger quicker shell recyles
       let(:version_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([{ :stdout => "6.1.8500.0\r\n" }])
         o
       end
 
       let(:echo_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([{ :stdout => "Hello\r\n" }])
         o
@@ -267,7 +267,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
       it "raises a WinRMError error" do
         err = proc {
           executor.run_powershell_script("nope")
-        }.must_raise WinRM::WinRMError
+        }.must_raise ::WinRM::WinRMError
         err.message.must_equal "#{executor.class}#open must be called " \
           "before any run methods are invoked"
       end
@@ -278,7 +278,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
       let(:command_id) { "command-123" }
 
       let(:echo_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([
           { :stdout => "Hello\r\n" },
@@ -297,7 +297,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
         service.expects(:run_command).with(
           shell_id,
           "powershell",
-          ["-encodedCommand", WinRM::PowershellScript.new("echo Hello").encoded]
+          ["-encodedCommand", ::WinRM::PowershellScript.new("echo Hello").encoded]
         )
 
         executor.run_powershell_script("echo Hello")
@@ -340,14 +340,14 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
       # use a "old" version of windows with lower max_commands threshold
       # to trigger quicker shell recyles
       let(:version_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([{ :stdout => "6.1.8500.0\r\n" }])
         o
       end
 
       let(:echo_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o[:data].concat([{ :stdout => "Hello\r\n" }])
         o
@@ -419,7 +419,7 @@ describe Kitchen::Transport::Winrm::CommandExecutor do
     stub_cmd(
       shell_id,
       "powershell",
-      ["-encodedCommand", WinRM::PowershellScript.new(script).encoded],
+      ["-encodedCommand", ::WinRM::PowershellScript.new(script).encoded],
       output,
       command_id
     )

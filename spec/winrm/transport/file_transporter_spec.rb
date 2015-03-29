@@ -26,7 +26,7 @@ require "winrm"
 
 require "winrm/transport/file_transporter"
 
-describe Kitchen::Transport::Winrm::FileTransporter do
+describe WinRM::Transport::FileTransporter do
 
   CheckEntry = Struct.new(
     :chk_exists, :src_md5, :dst_md5, :chk_dirty, :verifies)
@@ -41,12 +41,12 @@ describe Kitchen::Transport::Winrm::FileTransporter do
 
   let(:service) do
     s = mock("winrm_service")
-    s.responds_like_instance_of(WinRM::WinRMWebService)
+    s.responds_like_instance_of(::WinRM::WinRMWebService)
     s
   end
 
   let(:transporter) do
-    Kitchen::Transport::Winrm::FileTransporter.new(
+    WinRM::Transport::FileTransporter.new(
       service,
       logger,
       :id_generator => id_generator
@@ -188,7 +188,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       end
 
       let(:cmd_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o
       end
@@ -239,7 +239,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       describe "when a failed check command is returned" do
 
         def check_output
-          o = WinRM::Output.new
+          o = ::WinRM::Output.new
           o[:exitcode] = 10
           o[:data].concat([{ :stderr => "Oh noes\n" }])
           o
@@ -248,7 +248,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
         it "raises a FileTransporterFailed error" do
           err = proc {
             upload
-          }.must_raise Kitchen::Transport::Winrm::FileTransporterFailed
+          }.must_raise WinRM::Transport::FileTransporterFailed
           err.message.must_match regexify(
             "Upload failed (exitcode: 10)", :partial_line)
         end
@@ -257,7 +257,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       describe "when a failed decode command is returned" do
 
         def decode_output
-          o = WinRM::Output.new
+          o = ::WinRM::Output.new
           o[:exitcode] = 10
           o[:data].concat([{ :stderr => "Oh noes\n" }])
           o
@@ -266,7 +266,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
         it "raises a FileTransporterFailed error" do
           err = proc {
             upload
-          }.must_raise Kitchen::Transport::Winrm::FileTransporterFailed
+          }.must_raise WinRM::Transport::FileTransporterFailed
           err.message.must_match regexify(
             "Upload failed (exitcode: 10)", :partial_line)
         end
@@ -282,7 +282,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       end
 
       let(:cmd_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o
       end
@@ -339,7 +339,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       end
 
       let(:cmd_output) do
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 0
         o
       end
@@ -402,14 +402,14 @@ describe Kitchen::Transport::Winrm::FileTransporter do
 
     let(:tmp_zip) do
       s = mock("tmp_zip")
-      s.responds_like_instance_of(Kitchen::Transport::Winrm::TmpZip)
+      s.responds_like_instance_of(WinRM::Transport::TmpZip)
       s.stubs(:path).returns(Pathname(src_zip))
       s.stubs(:unlink)
       s
     end
 
     let(:cmd_output) do
-      o = WinRM::Output.new
+      o = ::WinRM::Output.new
       o[:exitcode] = 0
       o
     end
@@ -427,7 +427,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     end
 
     before do
-      Kitchen::Transport::Winrm::TmpZip.stubs(:new).with("#{local}/", logger).
+      WinRM::Transport::TmpZip.stubs(:new).with("#{local}/", logger).
         returns(tmp_zip)
 
       service.stubs(:run_cmd).
@@ -570,7 +570,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     describe "when a failed check command is returned" do
 
       def check_output
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 10
         o[:data].concat([{ :stderr => "Oh noes\n" }])
         o
@@ -579,7 +579,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       it "raises a FileTransporterFailed error" do
         err = proc {
           upload
-        }.must_raise Kitchen::Transport::Winrm::FileTransporterFailed
+        }.must_raise WinRM::Transport::FileTransporterFailed
         err.message.must_match regexify(
           "Upload failed (exitcode: 10)", :partial_line)
       end
@@ -588,7 +588,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     describe "when a failed decode command is returned" do
 
       def decode_output
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 10
         o[:data].concat([{ :stderr => "Oh noes\n" }])
         o
@@ -597,7 +597,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       it "raises a FileTransporterFailed error" do
         err = proc {
           upload
-        }.must_raise Kitchen::Transport::Winrm::FileTransporterFailed
+        }.must_raise WinRM::Transport::FileTransporterFailed
         err.message.must_match regexify(
           "Upload failed (exitcode: 10)", :partial_line)
       end
@@ -629,7 +629,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     end
 
     let(:cmd_output) do
-      o = WinRM::Output.new
+      o = ::WinRM::Output.new
       o[:exitcode] = 0
       o
     end
@@ -787,7 +787,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     describe "when a failed check command is returned" do
 
       def check_output
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 10
         o[:data].concat([{ :stderr => "Oh noes\n" }])
         o
@@ -796,7 +796,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       it "raises a FileTransporterFailed error" do
         err = proc {
           upload
-        }.must_raise Kitchen::Transport::Winrm::FileTransporterFailed
+        }.must_raise WinRM::Transport::FileTransporterFailed
         err.message.must_match regexify(
           "Upload failed (exitcode: 10)", :partial_line)
       end
@@ -805,7 +805,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
     describe "when a failed decode command is returned" do
 
       def decode_output
-        o = WinRM::Output.new
+        o = ::WinRM::Output.new
         o[:exitcode] = 10
         o[:data].concat([{ :stderr => "Oh noes\n" }])
         o
@@ -814,7 +814,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       it "raises a FileTransporterFailed error" do
         err = proc {
           upload
-        }.must_raise Kitchen::Transport::Winrm::FileTransporterFailed
+        }.must_raise WinRM::Transport::FileTransporterFailed
         err.message.must_match regexify(
           "Upload failed (exitcode: 10)", :partial_line)
       end
@@ -836,7 +836,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       entries.each { |entry| rows << entry.to_a }
     end
 
-    o = WinRM::Output.new
+    o = ::WinRM::Output.new
     o[:exitcode] = 0
     o[:data].concat(csv.lines.map { |line| { :stdout => line } })
     o
@@ -848,7 +848,7 @@ describe Kitchen::Transport::Winrm::FileTransporter do
       entries.each { |entry| rows << entry.to_a }
     end
 
-    o = WinRM::Output.new
+    o = ::WinRM::Output.new
     o[:exitcode] = 0
     o[:data].concat(csv.lines.map { |line| { :stdout => line } })
     o

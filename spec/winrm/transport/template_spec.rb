@@ -20,12 +20,12 @@ require_relative "../../spec_helper"
 
 require "winrm/transport/template"
 
-describe Kitchen::Transport::Winrm::Template do
+describe WinRM::Transport::Template do
 
   let(:path) { "/tmp/tmpl.erb" }
 
   let(:template) do
-    Kitchen::Transport::Winrm::Template.new(path)
+    WinRM::Transport::Template.new(path)
   end
 
   it "#render returns the ERb template rendered with the hash context" do

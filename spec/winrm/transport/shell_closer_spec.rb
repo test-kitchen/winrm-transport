@@ -21,9 +21,9 @@ require_relative "../../spec_helper"
 require "winrm/transport/shell_closer"
 require "winrm"
 
-describe Kitchen::Transport::Winrm::ShellCloser do
+describe WinRM::Transport::ShellCloser do
 
-  let(:klass) { Kitchen::Transport::Winrm::ShellCloser }
+  let(:klass) { WinRM::Transport::ShellCloser }
 
   let(:closer) do
     c = klass.new("info", false, %W[arg1 arg2])
