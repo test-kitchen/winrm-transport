@@ -20,7 +20,7 @@ Function Decode-Files($hash) {
     $tzip, $dst = (Unresolve-Path $_.Value["tmpzip"]), (Unresolve-Path $_.Value["dst"])
     $decoded = if ($tzip -ne $null) { $tzip } else { $dst }
     Decode-Base64File $tmp $decoded
-    Remove-Item $tmp -Force
+    #Remove-Item $tmp -Force
     $dMd5 = Get-MD5Sum $decoded
     $verifies = if ($sMd5 -eq $dMd5) { $true } else { $false }
     if ($tzip) { Unzip-File $tzip $dst; Remove-Item $tzip -Force }
