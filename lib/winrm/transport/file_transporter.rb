@@ -178,7 +178,6 @@ module WinRM
         debug { "Running check_files.ps1" }
         hash_file = create_remote_hash_file(check_files_ps_hash(files))
         vars = %{$hash_file = "#{hash_file}"\n}
-
         output = service.run_powershell_script(
           [vars, check_files_script].join("\n")
         )
@@ -253,7 +252,10 @@ module WinRM
           vars = %{$hash_file = "#{hash_file}"\n}
 
           output = service.run_powershell_script(
-            [vars, decode_files_script].join("\n")
+            [vars,
+             ". #{decode_files_script}",
+             "Decode-Files (Invoke-Input $hash_file) | ConvertTo-Csv -NoTypeInformation"
+            ].join("\n")
           )
           parse_response(output)
         end
@@ -376,7 +378,7 @@ module WinRM
         if obj.is_a?(Hash)
           obj.map { |k, v|
             %{#{pad(depth + 2)}#{ps_hash(k)} = #{ps_hash(v, depth + 2)}}
-          }.join("\n").insert(0, "@{\n").insert(-1, "\n#{pad(depth)}}")
+          }.join(";\n").insert(0, "@{\n").insert(-1, "\n#{pad(depth)}}")
         else
           %{"#{obj}"}
         end
