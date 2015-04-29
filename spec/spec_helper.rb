@@ -35,22 +35,6 @@ elsif ENV["COVERAGE"]
   SimpleCov.start "gem"
 end
 
-require "fakefs/safe"
 require "minitest/autorun"
 require "mocha/setup"
 require "tempfile"
-
-# Nasty hack to redefine IO.read in terms of File#read for fakefs
-class IO
-  def self.read(*args)
-    File.open(args[0], "rb") { |f| f.read(args[1]) }
-  end
-end
-
-def with_fake_fs
-  FakeFS.activate!
-  FileUtils.mkdir_p("/tmp")
-  yield
-  FakeFS.deactivate!
-  FakeFS::FileSystem.clear
-end
