@@ -27,7 +27,7 @@ Or install it yourself as:
 
 ## Usage
 
-This a library gem and doesn't have any CLI commands. There are 2 primary object classes:
+This is a library gem and doesn't have any CLI commands. There are 2 primary object classes:
 
 * [WinRM::Transport::CommandExecutor][command_executor]: an object which can
   execute multiple commands and PowerShell script in one shared remote shell
