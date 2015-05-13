@@ -513,7 +513,6 @@ describe WinRM::Transport::FileTransporter do
       upload
     end
 
-    # FRAGILE TEST.  THERE IS A TRAILING SPACE AFTER the ';'
     it "uploads the hash_file in chunks for decode_files" do
       hash = outdent!(<<-HASH.chomp)
         @{
@@ -665,7 +664,6 @@ describe WinRM::Transport::FileTransporter do
       upload
     end
 
-    # FRAGILE TEST.  THERE IS A TRAILING SPACE AFTER the ';'
     it "uploads the hash_file in chunks for check_files" do
       hash = outdent!(<<-HASH.chomp)
         @{
@@ -713,7 +711,6 @@ describe WinRM::Transport::FileTransporter do
       upload
     end
 
-    # FRAGILE TEST.  THERE IS A TRAILING SPACE AFTER the ';'
     it "uploads the hash_file in chunks for decode_files" do
       hash = outdent!(<<-HASH.chomp)
         @{
