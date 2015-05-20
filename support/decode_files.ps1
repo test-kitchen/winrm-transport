@@ -14,7 +14,7 @@ Function Decode-Files($hash) {
     $sMd5 = (Get-Item $tmp).BaseName.Replace("b64-", "")
     $decoded = if ($tzip -ne $null) { $tzip } else { $dst }
     Decode-Base64File $tmp $decoded
-    #Remove-Item $tmp -Force
+    Remove-Item $tmp -Force
     $dMd5 = Get-MD5Sum $decoded
     $verifies = $sMd5 -like $dMd5
     if ($tzip) {Unzip-File $tzip $dst;Remove-Item $tzip -Force}
