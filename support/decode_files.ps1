@@ -1,60 +1,50 @@
-Function Cleanup($o) { if (($o -ne $null) -and ($o.GetType().GetMethod("Dispose") -ne $null)) { $o.Dispose() } }
-
-Function Decode-Base64File($src, $dst) {
-  Try {
-    $in = (Get-Item $src).OpenRead()
-    $b64 = New-Object -TypeName System.Security.Cryptography.FromBase64Transform
-    $m = [System.Security.Cryptography.CryptoStreamMode]::Read
-    $d = New-Object -TypeName System.Security.Cryptography.CryptoStream $in,$b64,$m
-    echo $null > $dst
-    Copy-Stream $d ($out = [System.IO.File]::OpenWrite($dst))
-  } Finally { Cleanup $in; Cleanup $out; Cleanup $d }
-}
-
+Function Cleanup($o) { if (($o) -and ($o.GetType().GetMethod("Dispose") -ne $null)) { $o.Dispose() } }
+Function Decode-Base64File($src, $dst) {set-content -Encoding Byte -Path $dst -Value ([Convert]::FromBase64String([IO.File]::ReadAllLines($src)))}
 Function Copy-Stream($src, $dst) { $b = New-Object Byte[] 4096; while (($i = $src.Read($b, 0, $b.Length)) -ne 0) { $dst.Write($b, 0, $i) } }
+function Resolve-ProviderPath{ $input | % {if ($_){(Resolve-Path $_).ProviderPath} else{$null}} }
+Function Release-COM($o) { if ($o -ne $null) { [void][Runtime.Interopservices.Marshal]::ReleaseComObject($o) } }
+function Test-NETStack($Version, $r = 'HKLM:\Software\Microsoft\NET Framework Setup\NDP\v4') { [bool]("$r\Full", "$r\Client" | ? {(gp $_).Version -like "$($Version)*"}) }
+function Test-IOCompression {($PSVersionTable.PSVersion.Major -ge 3) -and (Test-NETStack '4.5')}
+set-alias RPP -Value Resolve-ProviderPath
 
 Function Decode-Files($hash) {
-  $hash.GetEnumerator() | ForEach-Object {
-    $tmp = Unresolve-Path $_.Key
+  foreach ($key in $hash.keys) {
+    $value = $hash[$key]
+    $tmp, $tzip, $dst = $Key, $Value["tmpzip"], $Value["dst"]
     $sMd5 = (Get-Item $tmp).BaseName.Replace("b64-", "")
-    $tzip, $dst = (Unresolve-Path $_.Value["tmpzip"]), (Unresolve-Path $_.Value["dst"])
     $decoded = if ($tzip -ne $null) { $tzip } else { $dst }
     Decode-Base64File $tmp $decoded
     Remove-Item $tmp -Force
     $dMd5 = Get-MD5Sum $decoded
-    $verifies = if ($sMd5 -eq $dMd5) { $true } else { $false }
-    if ($tzip) { Unzip-File $tzip $dst; Remove-Item $tzip -Force }
+    $verifies = $sMd5 -like $dMd5
+    if ($tzip) {Unzip-File $tzip $dst;Remove-Item $tzip -Force}
     New-Object psobject -Property @{ dst = $dst; verifies = $verifies; src_md5 = $sMd5; dst_md5 = $dMd5; tmpfile = $tmp; tmpzip = $tzip }
-  } | Select-Object -Property dst,verifies,src_md5,dst_md5,tmpfile,tmpzip
+  }
 }
 
 Function Get-MD5Sum($src) {
   Try {
-    $c = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+    $c = New-Object -TypeName Security.Cryptography.MD5CryptoServiceProvider
     $bytes = $c.ComputeHash(($in = (Get-Item $src).OpenRead()))
-    return ([System.BitConverter]::ToString($bytes)).Replace("-", "").ToLower()
-  } Finally { Cleanup $c; Cleanup $in }
+    ([BitConverter]::ToString($bytes)).Replace("-", "").ToLower()
+  } catch [exception]{throw $_} finally { Cleanup $c; Cleanup $in }
 }
 
 Function Invoke-Input($in) {
-  $in = Unresolve-Path $in
+  $in = $in | rpp
   Decode-Base64File $in ($decoded = "$($in).ps1")
   $expr = Get-Content $decoded | Out-String
   Remove-Item $in,$decoded -Force
-  return Invoke-Expression "$expr"
+  Invoke-Expression "$expr"
 }
-
-Function Release-COM($o) { if ($o -ne $null) { [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($o) } }
-
-Function Unresolve-Path($p) { if ($p -eq $null) { return $null } else { return $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($p) } }
 
 Function Unzip-File($src, $dst) {
-  $r = "HKLM:\Software\Microsoft\NET Framework Setup\NDP\v4"
-  if (($PSVersionTable.PSVersion.Major -ge 3) -and ((gp "$r\Full").Version -like "4.5*" -or (gp "$r\Client").Version -like "4.5*")) {
-    [System.Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.FileSystem") | Out-Null; [System.IO.Compression.ZipFile]::ExtractToDirectory("$src", "$dst")
-  } else {
-    Try { $s = New-Object -ComObject Shell.Application; ($dp = $s.NameSpace($dst)).CopyHere(($z = $s.NameSpace($src)).Items(), 0x610) } Finally { Release-Com $s; Release-Com $z; Release-COM $dp }
+  $unpack = $src -replace '\.zip'
+  if (Test-IOCompression) {Add-Type -AN System.IO.Compression.FileSystem; [IO.Compression.ZipFile]::ExtractToDirectory($src, $unpack)}
+  else {
+    Try {$s = New-Object -ComObject Shell.Application; ($dp = $s.NameSpace($unpack)).CopyHere(($z = $s.NameSpace($src)).Items(), 0x610)} Finally {Release-Com $s; Release-Com $z; Release-COM $dp}
   }
+  if (-not (test-path $dst)) {$null = mkdir $dst }
+  dir $unpack | cp -dest "$dst/" -force -recurse
+  rm $unpack -recurse -force
 }
-
-Decode-Files (Invoke-Input $hash_file) | ConvertTo-Csv -NoTypeInformation

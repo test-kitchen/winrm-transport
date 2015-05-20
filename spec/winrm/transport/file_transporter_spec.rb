@@ -517,7 +517,7 @@ describe WinRM::Transport::FileTransporter do
       hash = outdent!(<<-HASH.chomp)
         @{
           "#{ps_tmpfile}" = @{
-            "dst" = "#{dst}"
+            "dst" = "#{dst}";
             "tmpzip" = "#{ps_tmpzip}"
           }
         }
@@ -667,8 +667,8 @@ describe WinRM::Transport::FileTransporter do
     it "uploads the hash_file in chunks for check_files" do
       hash = outdent!(<<-HASH.chomp)
         @{
-          "#{dst1}" = "#{src1_md5}"
-          "#{dst2}" = "#{src2_md5}"
+          "#{dst1}" = "#{src1_md5}";
+          "#{dst2}" = "#{src2_md5}";
           "#{dst3}" = "#{src3_md5}"
         }
       HASH
@@ -716,7 +716,7 @@ describe WinRM::Transport::FileTransporter do
         @{
           "#{ps1_tmpfile}" = @{
             "dst" = "#{dst1}"
-          }
+          };
           "#{ps2_tmpfile}" = @{
             "dst" = "#{dst2}"
           }
