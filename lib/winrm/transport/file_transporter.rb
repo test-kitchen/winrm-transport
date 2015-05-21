@@ -251,9 +251,10 @@ module WinRM
           hash_file = create_remote_hash_file(decoded_files)
           vars = %{$hash_file = "#{hash_file}"\n}
 
+
           output = service.run_powershell_script(
-            [vars,
-             ". #{decode_files_script}",
+            [ "#{decode_files_script}",
+              vars,
              "Decode-Files (Invoke-Input $hash_file) | ConvertTo-Csv -NoTypeInformation"
             ].join("\n")
           )
