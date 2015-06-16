@@ -251,10 +251,9 @@ module WinRM
           hash_file = create_remote_hash_file(decoded_files)
           vars = %{$hash_file = "#{hash_file}"\n}
 
-
           output = service.run_powershell_script(
-            [ "#{decode_files_script}",
-              vars,
+            ["#{decode_files_script}",
+             vars,
              "Decode-Files (Invoke-Input $hash_file) | ConvertTo-Csv -NoTypeInformation"
             ].join("\n")
           )
@@ -356,7 +355,7 @@ module WinRM
       # @return [String] parsed clixml into String
       def clixml_to_s(clixml)
         doc = REXML::Document.new(clixml)
-        text = doc.get_elements('//S').map(&:text).join
+        text = doc.get_elements("//S").map(&:text).join
         text.gsub(/_x(\h\h\h\h)_/) do
           code = Regexp.last_match[1]
           code.hex.chr
@@ -373,18 +372,18 @@ module WinRM
       def parse_response(output)
         exitcode = output[:exitcode]
         stderr = output.stderr
-        if stderr.include?('The command line is too long')
+        if stderr.include?("The command line is too long")
           # The powershell script which should result in `output` parameter
           # is too long, remove some newlines, comments, etc from it.
-          raise StandardError, 'The command line is too long' \
-            ' (powershell script is too long)'
+          raise StandardError, "The command line is too long" \
+            " (powershell script is too long)"
         end
         pretty_stderr = clixml_to_s(stderr)
 
         if exitcode != 0
           raise FileTransporterFailed, "[#{self.class}] Upload failed " \
             "(exitcode: #{exitcode})\n#{pretty_stderr}"
-        elsif stderr != '\r\n' && stderr != ''
+        elsif stderr != '\r\n' && stderr != ""
           raise FileTransporterFailed, "[#{self.class}] Upload failed " \
             "(exitcode: 0), but stderr present\n#{pretty_stderr}"
         end
