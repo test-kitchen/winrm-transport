@@ -251,11 +251,15 @@ module WinRM
           hash_file = create_remote_hash_file(decoded_files)
           vars = %{$hash_file = "#{hash_file}"\n}
 
+          # https://github.com/test-kitchen/test-kitchen/issues/625
+          # https://github.com/test-kitchen/test-kitchen/issues/642
+          # Rather do not add comments to ps1 scripts, because then
+          # you'd probably get "The command line is too long" error.
+          # CopyHere options are 0x610, which is decimal: 1552 = 16 + 512 + 1024
+          # https://msdn.microsoft.com/en-us/library/windows/desktop/bb787866%28v=vs.85%29.aspx
+          # Release-Com method used to free the underlying COM objects.
           output = service.run_powershell_script(
-            [vars,
-             ". #{decode_files_script}",
-             "Decode-Files (Invoke-Input $hash_file) | ConvertTo-Csv -NoTypeInformation"
-            ].join("\n")
+          [vars, decode_files_script].join("\n")
           )
           parse_response(output)
         end
