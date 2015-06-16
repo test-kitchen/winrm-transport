@@ -348,6 +348,20 @@ module WinRM
         " " * depth
       end
 
+      # Parses CLIXML String into regular String (without any XML syntax).
+      # Inspired by https://github.com/WinRb/WinRM/issues/106.
+      #
+      # @param  clixml [String] clixml text
+      # @return [String] parsed clixml into String
+      def clixml_to_s(clixml)
+        doc = REXML::Document.new(clixml)
+        text = doc.get_elements('//S').map(&:text).join
+        text.gsub(/_x(\h\h\h\h)_/) do
+          code = Regexp.last_match[1]
+          code.hex.chr
+        end
+      end
+
       # Parses response of a PowerShell script or CMD command which contains
       # a CSV-formatted document in the standard output stream.
       #
@@ -356,10 +370,24 @@ module WinRM
       # @return [Hash] report hash, keyed by the local MD5 digest
       # @api private
       def parse_response(output)
-        if output[:exitcode] != 0
-          raise FileTransporterFailed, "[#{self.class}] Upload failed " \
-            "(exitcode: #{output[:exitcode]})\n#{output.stderr}"
+        exitcode = output[:exitcode]
+        stderr = output.stderr
+        if stderr.include?('The command line is too long')
+          # The powershell script which should result in `output` parameter
+          # is too long, remove some newlines, comments, etc from it.
+          raise StandardError, 'The command line is too long' \
+            ' (powershell script is too long)'
         end
+        pretty_stderr = clixml_to_s(stderr)
+
+        if exitcode != 0
+          raise FileTransporterFailed, "[#{self.class}] Upload failed " \
+            "(exitcode: #{exitcode})\n#{pretty_stderr}"
+        elsif stderr != '\r\n' && stderr != ''
+          raise FileTransporterFailed, "[#{self.class}] Upload failed " \
+            "(exitcode: 0), but stderr present\n#{pretty_stderr}"
+        end
+
         array = CSV.parse(output.stdout, :headers => true).map(&:to_hash)
         array.each { |h| h.each { |key, value| h[key] = nil if value == "" } }
         Hash[array.map { |entry| [entry.fetch("src_md5"), entry] }]
