@@ -251,11 +251,15 @@ module WinRM
           hash_file = create_remote_hash_file(decoded_files)
           vars = %{$hash_file = "#{hash_file}"\n}
 
+          # https://github.com/test-kitchen/test-kitchen/issues/625
+          # https://github.com/test-kitchen/test-kitchen/issues/642
+          # Rather do not add comments to ps1 scripts, because then
+          # you'd probably get "The command line is too long" error.
+          # CopyHere options are 0x610, which is decimal: 1552 = 16 + 512 + 1024
+          # https://msdn.microsoft.com/en-us/library/windows/desktop/bb787866%28v=vs.85%29.aspx
+          # Release-Com method used to free the underlying COM objects.
           output = service.run_powershell_script(
-            [vars,
-             ". #{decode_files_script}",
-             "Decode-Files (Invoke-Input $hash_file) | ConvertTo-Csv -NoTypeInformation"
-            ].join("\n")
+          [vars, decode_files_script].join("\n")
           )
           parse_response(output)
         end
@@ -348,6 +352,20 @@ module WinRM
         " " * depth
       end
 
+      # Parses CLIXML String into regular String (without any XML syntax).
+      # Inspired by https://github.com/WinRb/WinRM/issues/106.
+      #
+      # @param  clixml [String] clixml text
+      # @return [String] parsed clixml into String
+      def clixml_to_s(clixml)
+        doc = REXML::Document.new(clixml)
+        text = doc.get_elements("//S").map(&:text).join
+        text.gsub(/_x(\h\h\h\h)_/) do
+          code = Regexp.last_match[1]
+          code.hex.chr
+        end
+      end
+
       # Parses response of a PowerShell script or CMD command which contains
       # a CSV-formatted document in the standard output stream.
       #
@@ -356,10 +374,24 @@ module WinRM
       # @return [Hash] report hash, keyed by the local MD5 digest
       # @api private
       def parse_response(output)
-        if output[:exitcode] != 0
-          raise FileTransporterFailed, "[#{self.class}] Upload failed " \
-            "(exitcode: #{output[:exitcode]})\n#{output.stderr}"
+        exitcode = output[:exitcode]
+        stderr = output.stderr
+        if stderr.include?("The command line is too long")
+          # The powershell script which should result in `output` parameter
+          # is too long, remove some newlines, comments, etc from it.
+          raise StandardError, "The command line is too long" \
+            " (powershell script is too long)"
         end
+        pretty_stderr = clixml_to_s(stderr)
+
+        if exitcode != 0
+          raise FileTransporterFailed, "[#{self.class}] Upload failed " \
+            "(exitcode: #{exitcode})\n#{pretty_stderr}"
+        elsif stderr != '\r\n' && stderr != ""
+          raise FileTransporterFailed, "[#{self.class}] Upload failed " \
+            "(exitcode: 0), but stderr present\n#{pretty_stderr}"
+        end
+
         array = CSV.parse(output.stdout, :headers => true).map(&:to_hash)
         array.each { |h| h.each { |key, value| h[key] = nil if value == "" } }
         Hash[array.map { |entry| [entry.fetch("src_md5"), entry] }]
