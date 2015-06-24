@@ -73,7 +73,7 @@ Apache License, Version 2.0 (see [LICENSE.txt][license])
 [contributors]: https://github.com/test-kitchen/winrm-transport/graphs/contributors
 [file_transporter]: https://github.com/test-kitchen/winrm-transport/blob/master/lib/winrm/transport/file_transporter.rb
 [fnichol]: https://github.com/fnichol
-[issues]: https://github.com/test-kitchen/winrm-transpor/issues
+[issues]: https://github.com/test-kitchen/winrm-transport/issues
 [license]: https://github.com/test-kitchen/winrm-transport/blob/master/LICENSE.txt
 [repo]: https://github.com/test-kitchen/winrm-transport
 [semver]: http://semver.org/
