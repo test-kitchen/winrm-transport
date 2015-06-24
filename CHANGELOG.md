@@ -1,3 +1,14 @@
+## 1.0.2 / 2015-06-24
+
+### Bug fixes
+
+* Pull request [#8][]: Fix unzipping from COM, fix failed single file copies (when parent directory was not present), adding more tests around decode_files.ps1, cleaner error output. ([@smurawski][], [@xmik][])
+
+### Improvements
+
+* Pull request [#10][]: Fix winrm-transport/issues link in README.md. ([@hh][])
+
+
 ## 1.0.1 / 2015-05-20
 
 ### Bug fixes
@@ -18,6 +29,10 @@ The initial release.
 [#4]: https://github.com/test-kitchen/winrm-transport/issues/4
 [#5]: https://github.com/test-kitchen/winrm-transport/issues/5
 [#6]: https://github.com/test-kitchen/winrm-transport/issues/6
+[#8]: https://github.com/test-kitchen/winrm-transport/issues/8
+[#10]: https://github.com/test-kitchen/winrm-transport/issues/10
 [@fnichol]: https://github.com/fnichol
+[@hh]: https://github.com/hh
 [@jmccann]: https://github.com/jmccann
 [@smurawski]: https://github.com/smurawski
+[@xmik]: https://github.com/xmik

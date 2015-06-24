@@ -20,6 +20,6 @@ module WinRM
 
   module Transport
 
-    VERSION = "1.0.2.dev"
+    VERSION = "1.0.2"
   end
 end
