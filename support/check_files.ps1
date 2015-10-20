@@ -1,3 +1,4 @@
+$progresspreference = 'silentlycontinue'
 Function Cleanup($o) { if (($o -ne $null) -and ($o.GetType().GetMethod("Dispose") -ne $null)) { $o.Dispose() } }
 
 Function Decode-Base64File($src, $dst) {
