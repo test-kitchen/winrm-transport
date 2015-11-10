@@ -1,3 +1,9 @@
+## 1.0.2 / 2015-11-10
+
+### Bug fixes
+
+* Pull request [#15][]: Fixes file transfer to windows instances running WMF 5. ([@smurawski][])
+
 ## 1.0.2 / 2015-06-24
 
 ### Bug fixes
