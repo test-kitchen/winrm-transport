@@ -75,7 +75,20 @@ module WinRM
       # @return [String] the remote shell session indentifier
       def open
         close
-        @shell = service.open_shell
+
+        attempt = 0
+        begin
+          @shell = service.open_shell
+        rescue WinRMWSManFault => e
+          raise unless e.fault_description.include?('Illegal operation attempted on a registry key that has been marked for deletion') && attempt < MAX_RETRIES
+          debug { "Retrying open_shell call due to the following fault: fault_code = #{e.fault_code}; fault_description = #{e.fault_description}" }
+
+          attempt += 1
+          debug { "sleeping #{SLEEP_SECONDS} seconds before retry"}
+          sleep SLEEP_SECONDS
+          retry
+        end
+
         add_finalizer(shell)
         @command_count = 0
         determine_max_commands unless max_commands
@@ -139,6 +152,16 @@ module WinRM
       #   executed in one remote shell session on "modern" versions of Windows
       # @api private
       MODERN_LIMIT = 1500
+
+      # @return [Integer] the maximum number of times to retry if certain faults
+      #   occur when attempting to open a remote shell session
+      # @api private
+      MAX_RETRIES = 4
+
+      # @return [Integer] then number of seconds to wait before retrying when
+      #   attempting to to open a remote shell session after a fault
+      # @api private
+      SLEEP_SECONDS = 2
 
       # @return [String] the PowerShell command used to determine the version
       #   of Windows

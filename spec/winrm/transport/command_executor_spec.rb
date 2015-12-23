@@ -19,6 +19,7 @@
 require_relative "../../spec_helper"
 
 require "winrm/transport/command_executor"
+require "winrm/exceptions/exceptions"
 
 require "base64"
 require "securerandom"
@@ -112,6 +113,31 @@ describe WinRM::Transport::CommandExecutor do
 
     it "returns a shell id as a string" do
       executor.open.must_equal shell_id
+    end
+
+    describe "when a registry key marked for deletion fault occurs" do
+
+      let(:fault) do
+        fault_description = %q{<f:WSManFault Code='2147943418' Machine='localhost' xmlns:f='http://schemas.microsoft.com/wbem/wsman/1/wsmanfault'><f:Message><f:ProviderFault path='%systemroot%\system32\winrscmd.dll' provider='Shell cmd plugin'>Illegal operation attempted on a registry key that has been marked for deletion. </f:ProviderFault></f:Message></f:WSManFault>}
+        ::WinRM::WinRMWSManFault.new(fault_description, 2147943418)
+      end
+
+      let(:max_tries) { 5 }  # 5 because it's 4 retries, meaning the original attempt, plus 4 additional re-attempts
+
+      before do
+        service.unstub(:open_shell)
+      end
+
+      it "retries up to 4 times before giving up" do
+        service.expects(:open_shell).raises(fault).times(max_tries)
+        assert_raises(::WinRM::WinRMWSManFault) { executor.open }
+      end
+
+      it "succeeds if the fault occurs less than the maximum allowed times" do
+        service.expects(:open_shell).raises(fault).times(2).then.returns(shell_id)
+        executor.open
+        executor.shell.must_equal shell_id
+      end
     end
 
     describe "for modern windows distributions" do
