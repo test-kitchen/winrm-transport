@@ -118,11 +118,12 @@ describe WinRM::Transport::CommandExecutor do
     describe "when a registry key marked for deletion fault occurs" do
 
       let(:fault) do
-        fault_description = %q{<f:WSManFault Code='2147943418' Machine='localhost' xmlns:f='http://schemas.microsoft.com/wbem/wsman/1/wsmanfault'><f:Message><f:ProviderFault path='%systemroot%\system32\winrscmd.dll' provider='Shell cmd plugin'>Illegal operation attempted on a registry key that has been marked for deletion. </f:ProviderFault></f:Message></f:WSManFault>}
-        ::WinRM::WinRMWSManFault.new(fault_description, 2147943418)
+        msg = "Illegal operation attempted on a registry key that has been marked for deletion"
+        code = 2147943418 # the fault code returned by windows when this error occurs
+        ::WinRM::WinRMWSManFault.new(msg, code)
       end
 
-      let(:max_tries) { 5 }  # 5 because it's 4 retries, meaning the original attempt, plus 4 additional re-attempts
+      let(:max_tries) { ::WinRM::Transport::CommandExecutor::MAX_RETRIES + 1 }
 
       before do
         service.unstub(:open_shell)

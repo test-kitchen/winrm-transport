@@ -80,11 +80,14 @@ module WinRM
         begin
           @shell = service.open_shell
         rescue WinRMWSManFault => e
-          raise unless e.fault_description.include?('Illegal operation attempted on a registry key that has been marked for deletion') && attempt < MAX_RETRIES
-          debug { "Retrying open_shell call due to the following fault: fault_code = #{e.fault_code}; fault_description = #{e.fault_description}" }
+          fault = "Illegal operation attempted on a registry key that has been marked for deletion"
+          raise unless e.fault_description.include?(fault) && attempt < MAX_RETRIES
+          debug {
+            "Retry open_shell: fault_code=#{e.fault_code};fault_description=#{e.fault_description}"
+          }
 
           attempt += 1
-          debug { "sleeping #{SLEEP_SECONDS} seconds before retry"}
+          debug { "sleeping #{SLEEP_SECONDS} seconds before retry" }
           sleep SLEEP_SECONDS
           retry
         end
