@@ -9,6 +9,10 @@
 
 WinRM transport logic for re-using remote shells and uploading files. The original code was extracted from the [Test Kitchen][test_kitchen] project and remains the primary reference use case.
 
+## Deprecation Notice
+
+The functionality provided by this library has been merged into [winrm](https://github.com/WinRb/WinRM) and [winrm-fs](https://github.com/WinRb/WinRM-fs). Following the release of Test-Kitchen 1.6, this library will no longer be used and thus no longer be maintained.
+
 ## Installation
 
 Add this line to your application's Gemfile:
