@@ -253,6 +253,18 @@ describe WinRM::Transport::FileTransporter do
             "Upload failed (exitcode: 10)", :partial_line)
         end
       end
+      describe "when a valid check is returned with info in the output but no errors" do
+
+        def check_output
+          o = ::WinRM::Output.new
+          o[:exitcode] = 0
+          o[:data].concat([{ :stderr => "Oh noes\n" }])
+          o
+        end
+        it "no errors raised" do
+          upload.wont_be_nil
+        end
+      end
 
       describe "when a failed decode command is returned" do
 
@@ -269,6 +281,18 @@ describe WinRM::Transport::FileTransporter do
           }.must_raise WinRM::Transport::FileTransporterFailed
           err.message.must_match regexify(
             "Upload failed (exitcode: 10)", :partial_line)
+        end
+      end
+      describe "when a valid decode command is returned with info in the output but no errors" do
+
+        def decode_output
+          o = ::WinRM::Output.new
+          o[:exitcode] = 0
+          o[:data].concat([{ :stderr => "Oh noes\n" }])
+          o
+        end
+        it "no errors raised" do
+          upload.wont_be_nil
         end
       end
     end
@@ -584,6 +608,18 @@ describe WinRM::Transport::FileTransporter do
           "Upload failed (exitcode: 10)", :partial_line)
       end
     end
+    describe "when a valid check command is returned with info in the output but no errors" do
+
+      def check_output
+        o = ::WinRM::Output.new
+        o[:exitcode] = 0
+        o[:data].concat([{ :stderr => "Oh noes\n" }])
+        o
+      end
+      it "no errors raised" do
+        upload.wont_be_nil
+      end
+    end
 
     describe "when a failed decode command is returned" do
 
@@ -600,6 +636,18 @@ describe WinRM::Transport::FileTransporter do
         }.must_raise WinRM::Transport::FileTransporterFailed
         err.message.must_match regexify(
           "Upload failed (exitcode: 10)", :partial_line)
+      end
+    end
+    describe "when a valid decode command is returned with info in the output but no errors" do
+
+      def decode_output
+        o = ::WinRM::Output.new
+        o[:exitcode] = 0
+        o[:data].concat([{ :stderr => "Oh noes\n" }])
+        o
+      end
+      it "no errors raised" do
+        upload.wont_be_nil
       end
     end
   end
@@ -801,6 +849,18 @@ describe WinRM::Transport::FileTransporter do
           "Upload failed (exitcode: 10)", :partial_line)
       end
     end
+    describe "when a valid check command is returned with info in the output but no errors" do
+
+      def check_output
+        o = ::WinRM::Output.new
+        o[:exitcode] = 0
+        o[:data].concat([{ :stderr => "Oh noes\n" }])
+        o
+      end
+      it "no errors raised" do
+        upload.wont_be_nil
+      end
+    end
 
     describe "when a failed decode command is returned" do
 
@@ -817,6 +877,18 @@ describe WinRM::Transport::FileTransporter do
         }.must_raise WinRM::Transport::FileTransporterFailed
         err.message.must_match regexify(
           "Upload failed (exitcode: 10)", :partial_line)
+      end
+    end
+    describe "when a valid check command is returned with info in the output but no errors" do
+
+      def decode_output
+        o = ::WinRM::Output.new
+        o[:exitcode] = 0
+        o[:data].concat([{ :stderr => "Oh noes\n" }])
+        o
+      end
+      it "no errors raised" do
+        upload.wont_be_nil
       end
     end
   end
